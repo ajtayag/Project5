@@ -1,0 +1,70 @@
+/* Jose Alberto Tayag, 000907201
+April 10, 2024 */
+* {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: "Anta", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: #b5c0d0;
+}
+
+#container {
+  align-items: center;
+  text-align: center;
+}
+#buttons {
+  padding-top: 3%;
+}
+
+#dropdownmenu {
+  padding-top: 2%;
+}
+
+#mainContent {
+  padding-top: 2%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.content-div {
+  text-align: center;
+  align-items: center;
+}
+
+#tableData {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#tableData td {
+  border: 1px solid #ddd;
+  text-align: center;
+  word-break: break-word;
+  vertical-align: middle;
+}
+
+#tableData th {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 8px;
+  vertical-align: middle;
+}
+#tableData caption {
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+#tableData .col-0,
+#tableData .col-1 {
+  width: 25%;
+}
+
+#tableData .col-2 {
+  width: 50%;
+}

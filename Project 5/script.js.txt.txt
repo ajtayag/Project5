@@ -1,0 +1,150 @@
+// Jose Alberto Tayag, 000907201
+// April 10, 2024
+// Add event listeners to buttons after the page loads
+window.addEventListener("load", (event) => {
+  // Grab references to buttons
+  const firstButton = document.getElementById("firstButton");
+  const secondButton = document.getElementById("secondButton");
+  const thirdButton = document.getElementById("thirdButton");
+
+  // Attach click event listeners to buttons
+  firstButton.addEventListener("click", fetchFirstButton);
+  secondButton.addEventListener("click", fetchSecondButton);
+  thirdButton.addEventListener("click", fetchThirdButton);
+
+  // Fetches data for the first button and disables it after click
+  function fetchFirstButton() {
+    // Define the request URL
+    const url = "https://csunix.mohawkcollege.ca/~adams/10259/a6_responder.php";
+    firstButton.disabled = true; // Disable the button to prevent multiple clicks
+
+    // Send a GET request to the server
+    fetch(url)
+      .then((response) => response.text()) // Convert the response to text
+      .then((text) => {
+        // Create an H1 element with the fetched text
+        createH1Element(text + " 000907201");
+      });
+  }
+
+  // Creates an H1 element and appends it to the page
+  function createH1Element(text) {
+    const h1 = document.createElement("h1");
+    h1.textContent = text;
+    h1.style.textAlign = "center";
+    const container = document.getElementById("firstTask");
+    container.appendChild(h1); // Append the H1 to the container
+  }
+
+  // Fetches data for the second button based on selected theme
+  function fetchSecondButton() {
+    const theme = document.getElementById("themeSelect").value;
+    const url = `https://csunix.mohawkcollege.ca/~adams/10259/a6_responder.php?choice=${theme}`;
+
+    fetch(url)
+      .then((response) => response.json()) // Convert the response to JSON
+      .then((data) => {
+        displayData(data); // Display the fetched data
+      });
+  }
+
+  // Displays data by creating and appending divs for each item
+  function displayData(arr) {
+    let contentRow = document.getElementById("mainContent");
+    contentRow.innerHTML = ""; // Clear previous content
+
+    arr.forEach((item) => {
+      let div = document.createElement("div");
+      div.classList.add("content-div");
+      div.style.width = `${100 / arr.length}%`; // Set width based on number of items
+
+      // Append series, image, and name to each div
+      let h2 = document.createElement("h2");
+      h2.innerText = item.series;
+      div.appendChild(h2);
+
+      let img = document.createElement("img");
+      img.src = item.url;
+      img.style.maxWidth = "100%";
+      img.classList.add("img-fluid");
+      div.appendChild(img);
+
+      let p = document.createElement("p");
+      p.innerText = item.name;
+      div.appendChild(p);
+
+      contentRow.appendChild(div); // Append the div to the container
+    });
+  }
+
+  // Fetches data for the third button based on selected theme
+  function fetchThirdButton() {
+    const theme = document.getElementById("themeSelect").value;
+    const url = "https://csunix.mohawkcollege.ca/~adams/10259/a6_responder.php";
+
+    fetch(url, {
+      method: "POST", // Specify the request method
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `choice=${encodeURIComponent(theme)}`, // Send the theme as POST data
+    })
+      .then((response) => response.json()) // Convert the response to JSON
+      .then((data) => {
+        buildTable(data, theme); // Build a table with the fetched data
+      });
+  }
+
+  // Builds a table with the fetched data
+  function buildTable(data, theme) {
+    const table = document.getElementById("tableData");
+    table.innerHTML = ""; // Clear previous table content
+
+    // Add a caption with copyright text based on the theme
+    const caption = document.createElement("caption");
+    caption.textContent = getCopyrightText(theme);
+    caption.style.fontStyle = "italic";
+    caption.style.textAlign = "center";
+    table.insertBefore(caption, table.firstChild); // Insert caption at the top
+
+    // Define table headers and append them
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const headers = ["Series", "Name", "Link"];
+    headers.forEach((headerText, index) => {
+      const header = document.createElement("th");
+      header.setAttribute("scope", "col");
+      header.textContent = headerText;
+      header.classList.add(`col-${index}`);
+      header.style.fontWeight = "bold";
+      headerRow.appendChild(header);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create table body and rows for each data item
+    const tbody = document.createElement("tbody");
+    data.forEach((item) => {
+      const row = tbody.insertRow();
+      const cellSeries = row.insertCell();
+      cellSeries.textContent = item.series;
+      const cellName = row.insertCell();
+      cellName.textContent = item.name;
+      const cellLink = row.insertCell();
+      const link = document.createElement("a");
+      link.href = item.url;
+      link.textContent = item.url;
+      link.target = "_blank";
+      cellLink.appendChild(link);
+    });
+    table.appendChild(tbody); // Append the body to the table
+  }
+
+  // Returns copyright text based on the theme
+  function getCopyrightText(theme) {
+    if (theme.toLowerCase() === "mario") {
+      return "Game trademarks and copyrights are properties of their respective owners. Nintendo properties are trademarks of Nintendo. © 2019 Nintendo.";
+    } else if (theme.toLowerCase() === "starwars") {
+      return "Star Wars © & TM 2022 Lucasfilm Ltd. All rights reserved. Visual material © 2022 Electronic Arts Inc.";
+    }
+    return ""; // Default return if theme is not recognized
+  }
+});
